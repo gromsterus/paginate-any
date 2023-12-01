@@ -1,0 +1,177 @@
+[build-system]
+requires = ["hatchling", "hatch-requirements-txt"]
+build-backend = "hatchling.build"
+
+[project]
+name = "paginate-any"
+authors = [
+    { name = "Pavel Gromov", email = "gromsterus@gmail.com" },
+]
+description = "Pagination primitives for any ORM and web-frameworks"
+readme = "README.md"
+license = { file = "LICENSE" }
+dynamic = ["version", "dependencies", "optional-dependencies"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Web Environment",
+    "Framework :: AsyncIO",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+keywords = [
+    "cursor",
+    "fastapi",
+    "orm",
+    "pagination",
+    "sqlalchemy",
+    "sanic",
+    "web-framework",
+]
+requires-python = ">=3.10"
+
+[project.urls]
+Repository = "https://github.com/gromsterus/paginate-any"
+Issues = "https://github.com/gromsterus/paginate-any/issues"
+
+[tool.hatch.build.targets.sdist]
+packages = ["src/paginate_any"]
+
+[tool.hatch.version]
+path = "src/paginate_any/__init__.py"
+
+[tool.setuptools.dynamic]
+version = { attr = "paginate_any.__version__" }
+
+[tool.hatch.metadata.hooks.requirements_txt]
+files = ["requirements/main.txt"]
+
+[tool.hatch.metadata.hooks.requirements_txt.optional-dependencies]
+dev = ["requirements/dev.txt"]
+dev-fastapi = ["requirements/dev-fastapi.txt"]
+dev-sanic = ["requirements/dev-sanic.txt"]
+dev-sqlalchemy = ["requirements/dev-sqlalchemy.txt"]
+
+[tool.pytest.ini_options]
+norecursedirs = "*.egg .eggs dist build docs venv .tox .git __pycache__"
+asyncio_mode = "auto"
+addopts = [
+    "--strict-markers",
+    "--tb=short",
+    "--strict-config",
+]
+disable_test_id_escaping_and_forfeit_all_rights_to_community_support = true
+markers = [
+    "integration: test integration with external libs",
+    "sqlalchemy: test sqlalchemy integration"
+]
+filterwarnings = [
+    "ignore::DeprecationWarning:sanic.touchup.schemes.ode:70",
+    "ignore::DeprecationWarning:websockets.connection:9",
+    "ignore::DeprecationWarning:tracerite.html:1",
+]
+
+[tool.ruff]
+select = [
+    "E", # pycodestyle errors
+    "W", # pycodestyle warnings
+    "F", # pyflakes
+    "B", # flake-bugbear
+    "Q", # flake8-quotes
+    "I", # isort
+    "PT", # flake8-pytest-style
+    "RET", # flake8-return
+    "SIM", # flake8-simplify
+    "FBT", # flake8-boolean-trap
+    "TCH", # flake8-type-checking
+    "C4", # flake8-comprehensions
+    "PIE", # flake8-pie
+    "TRY", # tryceratops
+    "RUF", # ruff
+    "PL", # pylint
+    "DTZ", # flake8-datetimez
+    "UP", # pyupgrade
+    "C90", # mccabe
+    "COM", # flake8-commas
+    "INP", # flake8-no-pep420
+    "TID", # flake8-tidy-imports
+    "PTH", # flake8-use-pathlib
+    "ERA", # eradicate
+    "EM", # flake8-errmsg
+    "FA", # flake8-future-annotations
+]
+
+ignore = [
+    "E501", # Never enforce line length
+    "RET504", # Unnecessary variable assignment before `return` statement
+    "RUF001", # ruff unicode specific rules
+    "RUF002", # ruff unicode specific rules
+    "RUF003", # ruff unicode specific rules
+]
+
+unfixable = [
+    "B", # Avoid trying to fix flake8-bugbear violations.
+    "ERA", # Avoid deleting commented-out code
+]
+
+line-length = 90
+target-version = "py310"
+
+[tool.ruff.per-file-ignores]
+"tests/*" = [
+    "FBT001", # Boolean positional arg in function definition
+    "FBT003", # Boolean positional value in function call
+    "PLR0913", # Too many arguments to function call
+    "PLR2004", # Magic value used in comparison
+    "INP001", # File is part of an implicit namespace package. Add __init__.py?
+]
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["fastapi.Body", "fastapi.Depends", "fastapi.Header", "fastapi.Query"]
+
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = 'single'
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.isort]
+lines-after-imports = 2
+
+[tool.black]
+line-length = 90
+skip-string-normalization = true
+
+[tool.mypy]
+allow_redefinition = false
+check_untyped_defs = true
+disallow_untyped_decorators = true
+disallow_any_explicit = false
+disallow_any_generics = true
+disallow_untyped_calls = true
+ignore_errors = false
+ignore_missing_imports = true
+implicit_reexport = false
+local_partial_types = true
+strict_optional = true
+strict_equality = true
+no_implicit_optional = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unreachable = true
+warn_no_return = true
+follow_imports = "normal"
+pretty = true
+show_error_codes = true
+
+plugins = [
+    "sqlalchemy.ext.mypy.plugin",
+]

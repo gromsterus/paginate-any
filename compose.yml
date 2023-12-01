@@ -1,0 +1,42 @@
+x-app: &app
+  image: paginate-any:local
+  build:
+    context: .
+  volumes:
+    - .:/app
+  command: ./scripts/tests.sh
+
+services:
+  app:
+    <<: *app
+    ports:
+      - 8000:8000
+
+  py312:
+    <<: *app
+    image: paginate-any:local-py3.12
+    build:
+      context: .
+      args:
+        - py_version=3.12
+
+  py311:
+    <<: *app
+    image: paginate-any:local-py3.11
+    build:
+      context: .
+      args:
+        - py_version=3.11
+
+  py310:
+    <<: *app
+    image: paginate-any:local-py3.10
+    build:
+      context: .
+      args:
+        - py_version=3.10
+
+  fmt:
+    <<: *app
+    command: ./scripts/fmt.sh
+    profiles: [ "tools" ]

@@ -1,0 +1,4 @@
+sanic==23.6.0
+sanic-testing==23.6.0
+types-aiofiles==23.2.0.0
+types-ujson==5.9.0.0
