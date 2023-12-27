@@ -1,11 +1,11 @@
 import abc
 import binascii
 import logging
-from base64 import urlsafe_b64decode, urlsafe_b64encode
 from itertools import islice
 from typing import Any, Generic, Protocol, TypeAlias, TypeVar, final, runtime_checkable
 
 import msgspec
+from pybase64 import urlsafe_b64decode, urlsafe_b64encode
 
 from .datastruct import (
     CurrentCursor,
