@@ -2,6 +2,7 @@ from asyncio import current_task
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING, cast
 
+from paginate_any.ext.sqlalchemy import SQLAlchemyCursorPaginator
 from sqlalchemy import (
     DateTime,
     Select,
@@ -16,8 +17,6 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 from sqlalchemy.orm import DeclarativeBase, InstrumentedAttribute, Mapped, mapped_column
-
-from paginate_any.ext.sqlalchemy import SQLAlchemyCursorPaginator
 
 from ._data_structures import (
     LogPaginatorFactory,

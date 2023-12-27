@@ -7,9 +7,8 @@ from ._store import Car
 
 async def test_fastapi_pagination_depend(fastapi_fab, paginator, store):
     from fastapi import Depends, FastAPI
-    from pydantic import BaseModel, ConfigDict
-
     from paginate_any.ext.fastapi import FastApiCursorPagination, PaginationDependProtocol
+    from pydantic import BaseModel, ConfigDict
 
     class CarModel(BaseModel):
         model_config = ConfigDict(from_attributes=True)

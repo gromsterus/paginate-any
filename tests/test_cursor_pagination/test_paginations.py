@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING, Any, cast
 
 import pytest
 import pytest_asyncio
-
 from paginate_any.cursor_pagination import InMemoryCursorPaginator
 from paginate_any.exc import (
     ConfigurationErr,

@@ -4,7 +4,6 @@ from typing import Any
 
 import msgspec.json
 import pytest
-
 from paginate_any.cursor_pagination import InMemoryCursorPaginator
 from paginate_any.rest_api import PaginationConf
 

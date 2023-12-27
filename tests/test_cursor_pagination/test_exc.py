@@ -1,7 +1,6 @@
 from contextlib import nullcontext as does_not_raise
 
 import pytest
-
 from paginate_any.exc import check_module_version
 
 

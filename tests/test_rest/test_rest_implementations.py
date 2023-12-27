@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
-
 from paginate_any.exc import CursorParamsErr
 from paginate_any.rest_api import PaginationConf, set_default_conf
 
