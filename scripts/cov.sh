@@ -3,4 +3,5 @@
 set -o errexit
 set -o nounset
 
-exec python -m pytest --cov-report html --cov-report term --cov=.
+cov_report=${1:-html}
+exec python -m pytest --cov-report "$cov_report" --cov-report term --cov=src
