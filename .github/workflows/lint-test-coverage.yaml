@@ -27,6 +27,8 @@ jobs:
     strategy:
       matrix:
         py-v: [ "3.10", "3.11", "3.12" ]
+    env:
+      COVERAGE_FILE: .coverage.py-${{ matrix.py-v }}
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.py-v }}
@@ -39,12 +41,12 @@ jobs:
           python -m pip install -U pip
           python -m pip install -e .[$EXTRA_DEPS]
       - name: Test
-        run: ./scripts/cov.sh xml:coverage-${{ matrix.py-v }}.xml
+        run: ./scripts/cov.sh
       - name: Upload coverage
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-${{ matrix.py-v }}
-          path: coverage-${{ matrix.py-v }}.xml
+          name: ${{ env.COVERAGE_FILE }}
+          path: ${{ env.COVERAGE_FILE }}
           if-no-files-found: error
           retention-days: 14
   coverage:
@@ -60,7 +62,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: cov
-          pattern: coverage-*
+          pattern: .coverage.py-*
           merge-multiple: true
       - name: Merge coverage
         run: |
