@@ -120,9 +120,11 @@ class CursorPaginator(Generic[FieldT, RowsStoreT, RowT], metaclass=abc.ABCMeta):
                 logger.error(msg)
                 raise CursorValueErr(msg)
             cursor_values.append(value)
+        return self._encode_cursor(cursor_values)
 
-        values = _cursor_encode(cursor_values)
-        return urlsafe_b64encode(values).decode('utf-8')
+    @staticmethod
+    def _encode_cursor(cursor_values: list[Any]) -> str:
+        return urlsafe_b64encode(_cursor_encode(cursor_values)).decode('utf-8')
 
     def _get_field_val(self, row: RowT, field: str) -> Any:
         err: Exception | None
@@ -196,29 +198,26 @@ class CursorPaginator(Generic[FieldT, RowsStoreT, RowT], metaclass=abc.ABCMeta):
         if after_raw is not None and before_raw is not None:
             raise MultipleCursorsErr()
 
-        before = self._decode_cursor(before_raw)
-        after = self._decode_cursor(after_raw)
-        value = after or before
-        if value is None:
+        if after_raw:
+            cursor_values = self._decode_cursor(after_raw)
+        elif before_raw:
+            cursor_values = self._decode_cursor(before_raw)
+        else:
             return None, None
 
+        if len(cursor_values) != len(sort_fields):
+            raise CursorValueErr()
+        return (cursor_values, None) if after_raw else (None, cursor_values)
+
+    @staticmethod
+    def _decode_cursor(s: str | bytes) -> CursorValuesT:
         try:
-            cursor_values = _cursor_decode(value)
+            return _cursor_decode(urlsafe_b64decode(s))
+        except binascii.Error as exc:
+            raise CursorValueErr(detail='Invalid base64 value') from exc
         except _cursor_decode_err as exc:
             msg = 'Invalid cursor value'
             raise CursorValueErr(detail=msg) from exc
-        if len(cursor_values) != len(sort_fields):
-            raise CursorValueErr()
-        return (cursor_values, None) if after else (None, cursor_values)
-
-    @staticmethod
-    def _decode_cursor(s: CursorRawT) -> bytes | None:
-        if s is None:
-            return None
-        try:
-            return urlsafe_b64decode(s)
-        except binascii.Error as exc:
-            raise CursorValueErr(detail='Invalid base64 value') from exc
 
     async def _get_rows(
         self,
