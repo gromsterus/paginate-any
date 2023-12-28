@@ -55,9 +55,9 @@ class SQLAlchemyCursorPaginator(CursorPaginator[ColumnT, SQLAlchemyStoreT, RowT]
         return q
 
     def _order_by_fields(self, cursor: CurrentCursor) -> list[ColumnElement[Any]]:
-        _, sort_direction = cursor.query_conditions
-        order_by_fields = []
+        is_asc = cursor.query_conditions[1] == Ordering.ASC
+        fields = []
         for f in cursor.sort_fields:
             col = self._sort_fields[f]
-            order_by_fields.append(col if sort_direction == Ordering.ASC else col.desc())
-        return order_by_fields
+            fields.append(col if is_asc else col.desc())
+        return fields
