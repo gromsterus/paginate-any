@@ -2,6 +2,17 @@ import math
 import re
 
 
+__all__ = [
+    'PaginationErr',
+    'ConfigurationErr',
+    'CursorParamsErr',
+    'SortParamErr',
+    'CursorValueErr',
+    'MultipleCursorsErr',
+    'check_module_version',
+]
+
+
 class PaginationErr(Exception):
     ...
 
