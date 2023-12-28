@@ -234,7 +234,7 @@ async def test_null_cursor():
         sort_fields={'id': 'id', 'null': 'null'},
     )
     # act
-    with pytest.raises(CursorValueErr):
+    with pytest.raises(PaginationErr):
         await p.paginate([{'id': 1, 'null': None}, {'id': 2, 'null': None}], size=1)
 
 

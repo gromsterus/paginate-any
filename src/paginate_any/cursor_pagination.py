@@ -115,21 +115,20 @@ class CursorPaginator(Generic[FieldT, RowsStoreT, RowT], metaclass=abc.ABCMeta):
     ) -> CursorPaginationPage[RowT]:
         cursor = self._make_cursor(before, after, sort_fields, size)
         rows, has_prev, has_next = await self._get_rows(store, cursor)
-        page = CursorPaginationPage(
+        return CursorPaginationPage(
             cursor_params=cursor,
             rows=rows,
             prev=self._get_cursor_value(rows[0], cursor) if rows and has_prev else None,
             next=self._get_cursor_value(rows[-1], cursor) if rows and has_next else None,
         )
-        return page
 
     def _get_cursor_value(self, row: RowT, cursor: CurrentCursor) -> str:
         cursor_values: list[Any] = []
         for f in cursor.sort_fields:
             if (value := self._get_field_val(row, f)) is None:
-                msg = 'Cursor value cannot be null.'
+                msg = f'Cursor value must not be None (field: "{f}")'
                 logger.error(msg)
-                raise CursorValueErr(msg)
+                raise PaginationErr(msg)
             cursor_values.append(value)
         return self._encode_cursor(cursor_values)
 
@@ -282,7 +281,7 @@ _T = TypeVar('_T')
 
 @final
 class InMemoryCursorPaginator(CursorPaginator[str, list[_T], _T]):
-    """Example cursor using with in memory list of anything."""
+    """Example of using a cursor with a list of anything in memory."""
 
     async def _paginate_data(
         self,
