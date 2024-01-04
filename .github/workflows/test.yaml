@@ -1,6 +1,6 @@
 name: lint-test-coverage
 
-on: [ push ]
+on: [ push, workflow_call ]
 
 env:
   MAX_PYTHON_V: 3.12

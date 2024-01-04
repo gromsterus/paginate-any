@@ -1,4 +1,4 @@
-name: Upload Python Package
+name: pypi release
 
 on:
   release:
@@ -7,25 +7,27 @@ on:
 permissions:
   contents: read
 
+env:
+  MAX_PYTHON_V: 3.12
+
 jobs:
+  tests:
+    uses: ./.github/workflows/test.yaml
   deploy:
-
     runs-on: ubuntu-latest
-
+    environment: release
+    permissions:
+      id-token: write
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python
       uses: actions/setup-python@v3
       with:
-        python-version: '3.x'
-    - name: Install dependencies
+        python-version: ${{ env.MAX_PYTHON_V }}
+    - name: Build package
       run: |
         python -m pip install --upgrade pip
-        pip install build
-    - name: Build package
-      run: python -m build
+        pip install -r requirements-build.txt
+        hatch build
     - name: Publish package
-      uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
-      with:
-        user: __token__
-        password: ${{ secrets.PYPI_API_TOKEN }}
+      uses: pypa/gh-action-pypi-publish@release/v1
