@@ -11,9 +11,10 @@ env:
   MAX_PYTHON_V: 3.12
 
 jobs:
-  tests:
+  test:
     uses: ./.github/workflows/test.yaml
   deploy:
+    needs: test
     runs-on: ubuntu-latest
     environment: release
     permissions:
